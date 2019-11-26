@@ -1,0 +1,36 @@
+codigo funciono a medias revista loa
+
+
+
+
+//private static readonly HttpClient client = CrearHttpClient();
+
+        //private static HttpClient CrearHttpClient()
+        //{
+        //    var httpClient = new HttpClient();
+        //    httpClient.DefaultRequestHeaders.Accept.Add(
+        //        new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+        //    return httpClient;
+        //}
+
+        //public async static Task<List<Posts>> GetPost()
+        //{
+        //   // List<Posts> lista = new List<Posts>();
+        //    try
+        //    {
+        //        var response = await client.GetAsync("https://revistaloa.com/wp-json/wp/v2/posts");
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            var json = await response.Content.ReadAsStringAsync();
+        //            return  JsonConvert.DeserializeObject<List<Posts>>(json);
+                     
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+              
+        //    }
+        //    return default;
+        //}
