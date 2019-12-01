@@ -49,3 +49,55 @@
                 db.DetallesVentas.Add(DetalleVentaP);
                 db.SaveChanges();
 
+
+
+
+************************************************************************************************************
+
+ try
+            {
+                var IdVenta = (from c in db.Ventas
+                               select c.IdVenta).Max();
+                var IdEmpleado = Convert.ToInt32(Session["KeyEmplado"]);
+                //Recolectando la asiganacion del empleado
+                var Asig = (from A in db.TblAPs
+                           where A.IdEmpleado == IdEmpleado && A.Estado == true
+                           select A).FirstOrDefault();
+
+
+              // var Estado = (from A in db.TblAPs
+               //               where A.IdAP == IdVenta
+              //                select A).FirstOrDefault();
+             //   Estado.Estado = true;
+            //
+                var DetalleVentaP = new TblDetallesVentas();
+
+                if (IDProducto > 0)
+                {
+                    DetalleVentaP = new TblDetallesVentas()
+                    {
+                        Cantidad = CantidadP,
+                        PrecioVenta = PrecioP,
+                        Total = TotalP,
+                        IdProducto = IDProducto,
+                        IdVenta = IdVenta,
+                        PorcenDesc = PorcentajeP,
+                        FechaRegistro = DateTime.Now.Date
+                    };
+                    
+                    if (Asig.Estado == true && Asig.IdEmpleado == IdEmpleado)
+                    { 
+                        var SelectProd = (from p in db.TblDAPs
+                                          where p.IdProducto == IDProducto && p.IdAP == Asig.IdAP
+                                          select p).FirstOrDefault();
+
+                        SelectProd.Cantidad = SelectProd.Cantidad - CantidadP;
+                        SelectProd.CantidadVendida = SelectProd.CantidadVendida + CantidadP;
+
+
+                        db.Entry(SelectProd).State = System.Data.Entity.EntityState.Modified;
+                
+                    }
+                }
+                db.DetallesVentas.Add(DetalleVentaP);
+                db.SaveChanges();
