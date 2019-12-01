@@ -1,0 +1,51 @@
+[HttpPost]
+        public JsonResult DetalleVentaAjaxMethod(int IDProducto,  string NombreP, int CantidadP, double PrecioP, double TotalP, string PorcentajeP)
+        {
+            try
+            {
+                var IdVenta = (from c in db.Ventas
+                               select c.IdVenta).Max();
+                var IdUsuario = Convert.ToInt32(Session["IdUsuario"]);
+
+                //var apusuario = (from ap in db.TblAPs where ap.IdEmpleado == idEmpleado && ap.Estado == true select ap).FirstOrDefault();
+                //var NS = db.Servicios.Where(z => z.IdServicio == CodigoP).FirstOrDefault().Servicio;
+
+                //var NP = db.Productos.Where(z => z.IdProducto == CodigoP).FirstOrDefault().Nombre;
+                var DetalleVentaP = new TblDetallesVentas();
+
+                if (IDProducto > 0)
+                {
+                    DetalleVentaP = new TblDetallesVentas()
+                    {
+                        Cantidad = CantidadP,
+                        PrecioVenta = PrecioP,
+                        Total = TotalP,
+                        IdProducto = IDProducto,
+                        IdVenta = IdVenta,
+                        PorcenDesc = PorcentajeP,
+                        FechaRegistro = DateTime.Now.Date
+                    };
+
+                    var SelectAps = (from aps in db.TblAPs
+                                     where aps.IdEmpleado == IdUsuario
+                                     select aps).FirstOrDefault();
+
+                    if (SelectAps.Estado == true && SelectAps.IdEmpleado == IdUsuario)
+                    {
+                        var SelectProd = (from p in db.TblDAPs
+                                          from ap in db.TblAPs
+                                          where ( ap.IdEmpleado == IdUsuario  &&  p.IdProducto == IDProducto && p.IdAP == ap.IdAP)
+
+                                          select p).FirstOrDefault();
+
+                        SelectProd.Cantidad = SelectProd.Cantidad - CantidadP;
+                        SelectProd.CantidadVendida = SelectProd.CantidadVendida + CantidadP;
+
+
+                        db.Entry(SelectProd).State = System.Data.Entity.EntityState.Modified;
+                    }
+                }
+
+                db.DetallesVentas.Add(DetalleVentaP);
+                db.SaveChanges();
+
